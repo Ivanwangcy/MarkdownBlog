@@ -28,7 +28,7 @@ app.get('/api/notes', function (req, res) {
     });
   });
 
-app.post('api/notes', function(req, res) {
+app.post('/api/notes', function(req, res) {
   fs.readFile(NOTES_FILE, function(err, data) {
     if(err) {
       console.error(err);

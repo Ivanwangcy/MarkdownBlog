@@ -32,11 +32,35 @@ var NoteList = React.createClass({
 });
 
 var NoteForm = React.createClass({
+  getInitialState: function(){
+    return {author: '', text: ''};
+  },
+  handleAuthorChange: function(event) {
+    this.setState({author: event.target.value});
+  },
+  handleTextChange: function(event) {
+    this.setState({text: event.target.value});
+  },
+  handleSubmit: function(event) {
+    event.preventDefault();
+    var author = this.state.author.trim();
+    var text = this.state.text.trim();
+    if(!author || !text) return;
+
+    this.props.onNoteSubmit({author: author, text: text});
+    this.setState({author: '', text: ''});
+  },
   render: function() {
     return (
-      <div className="noteForm">
-        Hello, world! I am a NoteForm.
-      </div>
+      <form className="noteForm" onSubmit={this.handleSubmit}>
+        <input type="text" placeholder="Your name"
+          value={this.state.author}
+          onChange={this.handleAuthorChange}/>
+        <textarea type="text" placeholder="Write something..."
+          value={this.state.text}
+          onChange={this.handleTextChange}/>
+        <input type="submit" value="Post" />
+      </form>
     );
   }
 });
@@ -46,13 +70,54 @@ var NoteForm = React.createClass({
  * 自定义组件以大写字母开头 -- while custom React component names begin with an uppercase letter.
  */
 var NoteBox = React.createClass({
+    loadNotesFromServer: function() {
+      $.ajax({
+        url: this.props.url,
+        dataType: 'json',
+        cache: false,
+        success: function(data) {
+          this.setState({data: data});
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
+    },
+    handleNoteSubmit: function(note){
+      var notes = this.state.data;
+
+      note.id = Date.now();
+      var newNotes = notes.concat([note]);
+      this.setState({data: newNotes});
+      // TODO:
+      $.ajax({
+        url: this.props.url,
+        dataType: 'json',
+        type: 'POST',
+        data: note,
+        success: function(data) {
+          this.setState({data: data});
+        }.bind(this),
+        error: function(xhr, status, err) {
+          this.setState({data: notes});
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      })
+    },
+    getInitialState: function() {
+      return {data: []};
+    },
+    componentDidMount: function() {
+      this.loadNotesFromServer();
+      setInterval(this.loadNotesFromServer, this.props.pollInterval);
+    },
     render: function() {
       return (
         // composing components
         <div className="noteBox">
           <h1>Ivan’s Note</h1>
-          <NoteList data={this.props.data}/>
-          <NoteForm />
+          <NoteList data={this.state.data}/>
+          <NoteForm onNoteSubmit={this.handleNoteSubmit}/>
         </div>
       );
     }
@@ -66,6 +131,6 @@ var NoteBox = React.createClass({
  * @return {[type]} [none]
  */
 ReactDOM.render(
-  <NoteBox url="/api/notes"/>, // of raw React.createElement(NoteBox, null);
+  <NoteBox url="/api/notes" pollInterval={2000}/>, // of raw React.createElement(NoteBox, null);
   document.getElementById("content")
 );
