@@ -5,8 +5,11 @@ var app = express();
 
 app.set('port', (process.env.PORT || 4001));
 app.use("/", express.static(path.join(__dirname, "public"))); // 默认路由
-
+app.get('/hello', function (req, res) {
+    console.log(req.headers);
+    res.send('Hello world!');
+  });
 
 app.listen(app.get('port'), function() {
-  console.log(('Server started: http://localhost:' + app.get('port') + "/"));
+  console.log('Server started: http://localhost:' + app.get('port') + "/");
 });
