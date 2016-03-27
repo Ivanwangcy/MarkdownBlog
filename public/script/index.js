@@ -56,7 +56,7 @@ var NoteForm = React.createClass({
         <input type="text" placeholder="Your name"
           value={this.state.author}
           onChange={this.handleAuthorChange}/>
-        <textarea type="text" placeholder="Write something..."
+        <textarea placeholder="Write something..."
           value={this.state.text}
           onChange={this.handleTextChange}/>
         <input type="submit" value="Post" />
