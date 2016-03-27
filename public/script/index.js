@@ -13,12 +13,6 @@ var Note = React.createClass({
   }
 });
 
-var data = [
-  {id: 1, author: "Pete Hunt", text: ":ok: This is **one** note."},
-  {id: 2, author: "Jordan walke", text: ":ok: This is *another* note."}
-
-]
-
 var NoteList = React.createClass({
 
   render: function() {
