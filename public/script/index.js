@@ -1,10 +1,16 @@
-var CommentBox = React.createClass({
+var NoteList = React.createClass({
+  render: function() {
+    return <ul></ul>;
+  }
+});
+
+var NoteBox = React.createClass({
     render: function() {
-      return <div>
+      return <div className="NoteBox">
         <h1>Note</h1>
       </div>;
     }
 });
 
 
-ReactDOM.render(<CommentBox/>, document.getElementById("content"));
+ReactDOM.render(<NoteBox/>, document.getElementById("content"));
