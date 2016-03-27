@@ -1,8 +1,37 @@
-var NoteList = React.createClass({
+var Note = React.createClass({
+  rawMarkup: function() {
+    var rawMarkup = marked(this.props.children.toString(), {sanitize: true});
+    return {__html: rawMarkup};
+  },
   render: function() {
     return (
+      <div className="note">
+        <h2 className="noteAuthor">{this.props.author}</h2>
+        <span dangerouslySetInnerHTML={this.rawMarkup()}/>
+      </div>
+    );
+  }
+});
+
+var data = [
+  {id: 1, author: "Pete Hunt", text: ":ok: This is **one** note."},
+  {id: 2, author: "Jordan walke", text: ":ok: This is *another* note."}
+
+]
+
+var NoteList = React.createClass({
+
+  render: function() {
+    var noteNodes = this.props.data.map(function(note) {
+      return (
+        <Note author={note.author} key={note.id}>
+          {note.text}
+        </Note>
+      );
+    });
+    return (
       <div className="noteList">
-        Hello, world! I am a NoteList.
+        {noteNodes}
       </div>
     );
   }
@@ -28,7 +57,7 @@ var NoteBox = React.createClass({
         // composing components
         <div className="noteBox">
           <h1>Ivan’s Note</h1>
-          <NoteList />
+          <NoteList data={this.props.data}/>
           <NoteForm />
         </div>
       );
@@ -43,6 +72,6 @@ var NoteBox = React.createClass({
  * @return {[type]} [none]
  */
 ReactDOM.render(
-  <NoteBox />, // of raw React.createElement(NoteBox, null);
+  <NoteBox data={data}/>, // of raw React.createElement(NoteBox, null);
   document.getElementById("content")
 );
