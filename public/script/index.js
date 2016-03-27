@@ -1,9 +1,22 @@
 var NoteList = React.createClass({
   render: function() {
-    return <ul></ul>;
+    return (
+      <div className="noteList">
+        Hello, world! I am a NoteList.
+      </div>
+    );
   }
 });
 
+var NoteForm = React.createClass({
+  render: function() {
+    return (
+      <div className="noteForm">
+        Hello, world! I am a NoteForm.
+      </div>
+    );
+  }
+});
 
 /**
  * React 实例化组件不是真实的DOM节点
@@ -12,10 +25,11 @@ var NoteList = React.createClass({
 var NoteBox = React.createClass({
     render: function() {
       return (
-        // JSX raw format -- React.createElement('div', {className: 'noteBox'}, 'Hello world!');
+        // composing components
         <div className="noteBox">
           <h1>Ivan’s Note</h1>
-          Hello, world! I am a NoteBox.
+          <NoteList />
+          <NoteForm />
         </div>
       );
     }
