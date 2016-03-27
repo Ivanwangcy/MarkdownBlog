@@ -16,12 +16,43 @@ app.use(function(req, res, next) {
 
   res.setHeader('Cache-Control', 'no-cache');
   next();
-})；
+});
 
 app.get('/api/notes', function (req, res) {
-    console.log(req.headers);
-    res.send('Hello world!');
+    fs.readFile(NOTES_FILE, function(err, data){
+      if(err) {
+        console.error(err);
+        process.exit(1);
+      }
+      res.json(JSON.parse(data));
+    });
   });
+
+app.post('api/notes', function(req, res) {
+  fs.readFile(NOTES_FILE, function(err, data) {
+    if(err) {
+      console.error(err);
+      process.exit(1);
+    }
+
+    var notes = JSON.parse(data);
+
+    var newNote = {
+      id: Date.now(),
+      author: req.body.author,
+      text: req.body.text,
+    };
+
+    notes.push(newNote);
+    fs.writeFile(NOTES_FILE, JSON.stringify(notes, null, 4), function(err) {
+      if(err) {
+        console.error((err));
+        process.exit(1);
+      }
+      res.json(notes);
+    });
+  })
+});
 
 app.listen(app.get('port'), function() {
   console.log('Server started: http://localhost:' + app.get('port') + "/");

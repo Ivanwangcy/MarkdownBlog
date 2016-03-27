@@ -66,6 +66,6 @@ var NoteBox = React.createClass({
  * @return {[type]} [none]
  */
 ReactDOM.render(
-  <NoteBox data={data}/>, // of raw React.createElement(NoteBox, null);
+  <NoteBox url="/api/notes"/>, // of raw React.createElement(NoteBox, null);
   document.getElementById("content")
 );
